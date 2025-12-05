@@ -1,6 +1,7 @@
 import {  NextFunction, Request, Response } from "express"
 import { envVars } from "../config/env"
 import AppError from "../errorHelpers/AppError";
+import { cloudinaryDeleteUpload } from "../config/cloudinary.config";
 // import { cloudinaryDeleteUpload } from "../config/cloudinary.config";
 
 
@@ -30,16 +31,16 @@ export const globalError = async (err:any, req: Request, res: Response, next: Ne
 
     */
 
-                //  if(req.file){
-                //     await cloudinaryDeleteUpload(req.file.path);
-                //  }
+                 if(req.file){
+                    await cloudinaryDeleteUpload(req.file.path);
+                 }
 
-                //  if(req.files && Array.isArray(req.files) && req.files.length > 0){
+                 if(req.files && Array.isArray(req.files) && req.files.length > 0){
 
-                //     const allImages = (req.files as Express.Multer.File[])?.map(file => file.path)
+                    const allImages = (req.files as Express.Multer.File[])?.map(file => file.path)
 
-                //     await Promise.all(allImages.map(url => cloudinaryDeleteUpload(url)));
-                //  }
+                    await Promise.all(allImages.map(url => cloudinaryDeleteUpload(url)));
+                 }
     
     if(err.code === 11000){
 
