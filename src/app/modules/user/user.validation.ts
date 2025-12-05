@@ -16,8 +16,8 @@ export const createUserValidation = z.object({
 })
 
 export const updateUserValidation = z.object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email address"),
+    name: z.string().min(1, "Name is required").optional(),
+    email: z.string().email("Invalid email address").optional(),
 
     bio:  z.string().max(1000).optional(),
     location: z.string().max(255).optional(),
