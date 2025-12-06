@@ -26,6 +26,75 @@ const createEvent = catchAsyncError (async( req: Request, res: Response)=>{
 })
 
 })
+const updateEvent = catchAsyncError (async( req: Request, res: Response)=>{
 
+    const decodedToken = req.user as JwtPayload
 
-export const eventController = {createEvent}
+    const payload: IEvent = {
+        ...req.body,
+       
+        image: req.file?.path
+        
+    }
+
+    const id = req.params.id as string
+    const result = await eventService.updateEvent(id,decodedToken.userId,payload);
+
+    sendResponse(res,{
+        statusCode: 201,
+        success: true,
+        message:  "event updated successfully",
+        data: result,
+       
+})
+
+})
+
+export const getOwnEventForHost = catchAsyncError(async (req, res) => {
+
+    const decodedToken = req.user;
+  
+    const result = await eventService.getOwnEventForHost(decodedToken.userId, req.query);
+  
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Host events fetched successfully",
+      data: result,
+    });
+  });
+  export const getAllEventForAdmin = catchAsyncError(async (req, res) => {
+    const result = await eventService.getAllEventForAdmin(req.query);
+  
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "All events fetched successfully",
+      data: result,
+    });
+  });
+
+  export const getAllEventForUser = catchAsyncError(async (req, res) => {
+    const result = await eventService.getAllEventForUser(req.query);
+  
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Events fetched successfully",
+      data: result,
+    });
+  });
+
+  export const getSingleEvent = catchAsyncError(async (req, res) => {
+    const { id } = req.params;
+  
+    const result = await eventService.getSingleEvent(id as string);
+  
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "single event fetched successfully",
+      data: result,
+    });
+  });
+export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent}

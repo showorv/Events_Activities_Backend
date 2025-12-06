@@ -18,3 +18,18 @@ export const createEventSchema = z.object({
   description: z.string().optional(),
   status: EventStatusEnum.optional(),
 });
+
+
+
+export const updateEventSchema = z.object({
+  name: z.string("Event name must be a string").optional(),
+  type: z.string("Event type must be a string").optional(),
+  date: z.preprocess((arg) => (typeof arg === "string" || arg instanceof Date ? new Date(arg) : arg), z.date("Event date must be a valid date")).optional(),
+  time: z.string("Event time must be a string").optional(),
+  location: z.string("Event location must be a string").optional(),
+  minParticipants: z.number("Minimum participants must be a number",).int().positive().optional(),
+  maxParticipants: z.number( "Maximum participants must be a number",).int().positive().optional(),
+  joiningFee: z.number().optional(),
+  description: z.string().optional(),
+  status: EventStatusEnum.optional(),
+});

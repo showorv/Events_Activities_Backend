@@ -132,9 +132,7 @@ const updateUser = async(userId: string, payload: Partial<IUser>, decodeToken: J
         }
     }
 
-    // if(payload.password){
-    //     payload.password = await bcrypt.hash(payload.password,Number( envVars.HASH_SALT))
-    // }
+ 
 
     const newUpdateUser = await User.findByIdAndUpdate(userId, payload, {new: true, runValidators: true})
 
@@ -157,7 +155,7 @@ const getMe = async (userId: string) => {
   };
 
 
-
+  
 
 export const userService = 
 {
