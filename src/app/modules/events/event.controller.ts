@@ -50,7 +50,8 @@ const updateEvent = catchAsyncError (async( req: Request, res: Response)=>{
 
 })
 
-export const getOwnEventForHost = catchAsyncError(async (req, res) => {
+
+ const getOwnEventForHost = catchAsyncError(async (req, res) => {
 
     const decodedToken = req.user;
   
@@ -63,7 +64,9 @@ export const getOwnEventForHost = catchAsyncError(async (req, res) => {
       data: result,
     });
   });
-  export const getAllEventForAdmin = catchAsyncError(async (req, res) => {
+
+
+ const getAllEventForAdmin = catchAsyncError(async (req, res) => {
     const result = await eventService.getAllEventForAdmin(req.query);
   
     sendResponse(res, {
@@ -74,7 +77,7 @@ export const getOwnEventForHost = catchAsyncError(async (req, res) => {
     });
   });
 
-  export const getAllEventForUser = catchAsyncError(async (req, res) => {
+ const getAllEventForUser = catchAsyncError(async (req, res) => {
     const result = await eventService.getAllEventForUser(req.query);
   
     sendResponse(res, {
@@ -85,7 +88,7 @@ export const getOwnEventForHost = catchAsyncError(async (req, res) => {
     });
   });
 
-  export const getSingleEvent = catchAsyncError(async (req, res) => {
+const getSingleEvent = catchAsyncError(async (req, res) => {
     const { id } = req.params;
   
     const result = await eventService.getSingleEvent(id as string);
@@ -97,4 +100,40 @@ export const getOwnEventForHost = catchAsyncError(async (req, res) => {
       data: result,
     });
   });
-export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent}
+
+  const deleteEvent = catchAsyncError (async( req: Request, res: Response)=>{
+
+    const decodedToken = req.user as JwtPayload
+
+   const id = req.params.id as string
+
+    const result = await eventService.deleteEvent(decodedToken.userId,id);
+
+    sendResponse(res,{
+        statusCode: 201,
+        success: true,
+        message:  "event deleted successfully",
+        data: result,
+       
+})
+
+})
+  const viewParticipants = catchAsyncError (async( req: Request, res: Response)=>{
+
+
+
+   const id = req.params.id as string
+
+    const result = await eventService.viewParticipants(id, req.query);
+
+    sendResponse(res,{
+        statusCode: 201,
+        success: true,
+        message:  "participants fetched successfully",
+        data: result,
+       
+})
+
+})
+
+export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent, deleteEvent, viewParticipants}

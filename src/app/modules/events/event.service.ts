@@ -4,7 +4,7 @@ import { IEvent } from "./event.interface"
 import { Event } from "./event.model"
 import { cloudinaryDeleteUpload } from "../../config/cloudinary.config"
 import { buildQuery } from "../../utils/queryBuilder"
-
+import Participation from "../participants/participants.model";
 const createEvent = async(hostId:string, payload: Partial<IEvent>)=> {
 
     if(!hostId){
@@ -34,8 +34,7 @@ const updateEvent = async(id:string,hostId: string, payload: Partial<IEvent>)=> 
 
     const host = new mongoose.Types.ObjectId(hostId)
 
-    console.log("host",host);
-    console.log("event host",eventExist.host);
+ 
     
 
     if (!eventExist.host.equals(host)) {
@@ -167,13 +166,89 @@ const getSingleEvent = async (id: string) => {
   };
   
 
+  const deleteEvent = async (hostId: string, eventId: string)=>{
+
+    const event = await Event.findById(eventId)
+
+    if(!event){
+        throw new AppError(401, "event not found")
+    }
+
+    const host = new mongoose.Types.ObjectId(hostId)
+
+    if (!event.host.equals(host)) {
+        throw new AppError(401, "this is not your event");
+    }
+
+
+    const eventDelete = await Event.findByIdAndDelete(eventId)
+
+    await cloudinaryDeleteUpload(event.image!)
+
+    return eventDelete
+
+  }
+
+
+  const viewParticipants = async (eventId: string, query: any) => {
+    const page = parseInt(query?.page) || 1;
+    const limit = parseInt(query?.limit) || 10;
+    const skip = (page - 1) * limit;
+    const searchTerm = query?.searchTerm;
+  
+    const match: any = { event: new mongoose.Types.ObjectId(eventId) };
+  
+    
+    Object.keys(query || {}).forEach((key) => {
+      if (!["searchTerm", "page", "limit", "sortBy", "sortOrder"].includes(key)) {
+        match[key] = query[key];
+      }
+    });
+ 
+    const pipeline: any[] = [
+      { $match: match },
+      { $lookup: 
+        { from: "users", 
+        localField: "user", 
+        foreignField: "_id", 
+        as: "user" } },
+
+      { $unwind: "$user" },
+    ];
+  
+
+    if (searchTerm) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { "user.name": { $regex: searchTerm, $options: "i" } },
+            { "user.email": { $regex: searchTerm, $options: "i" } },
+          ],
+        },
+      });
+    }
+  
+   
+    const totalPipeline = [...pipeline, { $count: "total" }];
+    const totalResult = await Participation.aggregate(totalPipeline);
+    const total = totalResult[0]?.total || 0;
+  
+
+    pipeline.push({ $sort: { createdAt: -1 } });
+    pipeline.push({ $skip: skip });
+    pipeline.push({ $limit: limit });
+  
+    const participants = await Participation.aggregate(pipeline);
+  
+    return {
+      total,
+      page,
+      limit,
+      participants,
+    };
+  };
 
 
 
 
-
-
-
-
-
-export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent}
+export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent,deleteEvent,viewParticipants}

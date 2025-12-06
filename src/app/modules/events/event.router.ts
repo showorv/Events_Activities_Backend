@@ -21,7 +21,11 @@ router.get("/userEvent", checkAuth(...Object.values(Role)), eventController.getA
 
 router.get("/:id", checkAuth(...Object.values(Role)), eventController.getSingleEvent)
 
+router.get("/view/:id", checkAuth(Role.HOST), eventController.viewParticipants)
+
 router.patch("/:id",checkAuth(Role.HOST),multerUpload.single("file"), validateSchma(updateEventSchema), eventController.updateEvent)
+
+router.delete("/:id",checkAuth(Role.HOST), eventController.deleteEvent)
 
 
 export const eventRouter = router
