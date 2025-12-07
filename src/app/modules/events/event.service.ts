@@ -1,10 +1,11 @@
-import mongoose from "mongoose"
+import mongoose, { Types } from "mongoose"
 import AppError from "../../errorHelpers/AppError"
 import { IEvent } from "./event.interface"
 import { Event } from "./event.model"
 import { cloudinaryDeleteUpload } from "../../config/cloudinary.config"
 import { buildQuery } from "../../utils/queryBuilder"
 import { Participation } from "../participants/participants.model"
+import { Payment } from "../payment/payment.model"
 
 const createEvent = async(hostId:string, payload: Partial<IEvent>)=> {
 
@@ -249,7 +250,54 @@ const getSingleEvent = async (id: string) => {
     };
   };
 
+  const getEventRevenue = async (hostId: string, eventId: string) => {
+ 
+    const event = await Event.findOne({ _id: eventId, host: hostId });
+  
+    if (!event) {
+      throw new AppError(403, "You are not the host of this event");
+    }
+  
+ 
+    const payments = await Payment.aggregate([
+      {
+        $match: {
+          event: new Types.ObjectId(eventId),
+          status: "PAID",
+        },
+      },
+      {
+        $group: {
+          _id: "$event",
+          totalRevenue: { $sum: "$amount" },        
+          totalTransactions: { $sum: 1 },            
+          users: { $addToSet: "$user" },             
+        },
+      },
+    ]);
+  
+    if (payments.length === 0) {
+      return {
+        eventId,
+        eventName: event.name,
+        totalRevenue: 0,
+        totalTransactions: 0,
+        totalParticipantsPaid: 0,
+      };
+    }
+  
+    const result = payments[0];
+  
+    return {
+      eventId,
+      eventName: event.name,
+      totalRevenue: result.totalRevenue,
+      totalTransactions: result.totalTransactions,
+      totalParticipantsPaid: result.users.length,
+    };
+  };
+  
 
 
 
-export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent,deleteEvent,viewParticipants}
+export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent,deleteEvent,viewParticipants, getEventRevenue}

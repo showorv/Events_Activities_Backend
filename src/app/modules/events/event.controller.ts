@@ -136,4 +136,20 @@ const getSingleEvent = catchAsyncError(async (req, res) => {
 
 })
 
-export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent, deleteEvent, viewParticipants}
+const eventRevenue = catchAsyncError(async (req: Request, res: Response) => {
+  const hostId = req.user.userId; 
+  const eventId = req.params.eventId as string;
+
+  const result = await eventService.getEventRevenue(hostId, eventId);
+
+  sendResponse(res,{
+    statusCode: 201,
+    success: true,
+    message:  "event revenue get successfully",
+    data: result,
+   
+})
+});
+
+
+export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent, deleteEvent, viewParticipants, eventRevenue}

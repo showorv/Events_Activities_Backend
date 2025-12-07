@@ -111,5 +111,6 @@ const joinEvent = async (userId: string, eventId: string) => {
   };
   
 
+  
 
 export const participationService = {joinEvent, leaveEvent}

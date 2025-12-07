@@ -22,6 +22,7 @@ router.get("/userEvent", checkAuth(...Object.values(Role)), eventController.getA
 router.get("/:id", checkAuth(...Object.values(Role)), eventController.getSingleEvent)
 
 router.get("/view/:id", checkAuth(Role.HOST), eventController.viewParticipants)
+router.get("/revenue/:eventId", checkAuth(Role.HOST), eventController.eventRevenue)
 
 router.patch("/:id",checkAuth(Role.HOST),multerUpload.single("file"), validateSchma(updateEventSchema), eventController.updateEvent)
 

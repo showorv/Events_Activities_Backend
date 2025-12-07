@@ -4,6 +4,7 @@ import { authRouter } from "../modules/auth/auth.router";
 import { eventRouter } from "../modules/events/event.router";
 import { participationRouter } from "../modules/participants/participants.router";
 import { paymentRouter } from "../modules/payment/payment.router";
+import { rateRouter } from "../modules/rating/rating.router";
 
 
 
@@ -29,6 +30,10 @@ const moduleRoutes = [
     {
         path: "/payment",
         route: paymentRouter
+    },
+    {
+        path: "/rating",
+        route: rateRouter
     },
     
 ]
