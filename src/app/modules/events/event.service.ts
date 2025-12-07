@@ -4,7 +4,8 @@ import { IEvent } from "./event.interface"
 import { Event } from "./event.model"
 import { cloudinaryDeleteUpload } from "../../config/cloudinary.config"
 import { buildQuery } from "../../utils/queryBuilder"
-import Participation from "../participants/participants.model";
+import { Participation } from "../participants/participants.model"
+
 const createEvent = async(hostId:string, payload: Partial<IEvent>)=> {
 
     if(!hostId){

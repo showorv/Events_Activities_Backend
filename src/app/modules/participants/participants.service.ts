@@ -3,8 +3,9 @@
 import mongoose from "mongoose";
 import { Status } from "../events/event.interface";
 import { Event } from "../events/event.model";
-import Participation from "../participants/participants.model";
+
 import { participantsPaymentStatus } from "./participants.interface";
+import { Participation } from "./participants.model";
 
 const joinEvent = async (userId: string, eventId: string) => {
     const session = await mongoose.startSession();
@@ -22,8 +23,14 @@ const joinEvent = async (userId: string, eventId: string) => {
   
       const alreadyJoined = await Participation.findOne({ user: userId, event: eventId }).session(session);
       if (alreadyJoined) {
-        throw new Error("You already joined this event");
+        if (alreadyJoined.paymentStatus === participantsPaymentStatus.PAID) {
+          throw new Error("You have already joined and paid for this event");
+        }
+      
+        
+        return alreadyJoined; // if not paid then can paid here
       }
+      
   
       const currentCount = await Participation.countDocuments({ event: eventId, status: "JOINED" }).session(session);
   

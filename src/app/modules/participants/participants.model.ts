@@ -30,4 +30,4 @@ const participationSchema = new mongoose.Schema<IParticipants>(
   { timestamps: true }
 );
 
-export default mongoose.model<IParticipants>("Participation", participationSchema);
+export const Participation = mongoose.model<IParticipants>("Participation", participationSchema);
