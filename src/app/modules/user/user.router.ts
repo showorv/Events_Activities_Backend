@@ -15,8 +15,12 @@ checkAuth(Role.ADMIN, Role.SUPERADMIN),
 userController.getAllUser);
 
 router.get("/me", checkAuth(...Object.values(Role)), userController.getMe)
+router.get("/request-host", checkAuth(Role.ADMIN, Role.SUPERADMIN), userController.getAllHostRequest)
+router.patch("/become-host", checkAuth(Role.USER), userController.becomeHost)
 
 router.get("/:userId", checkAuth(...Object.values(Role)),userController.getSingleUser)
+
+router.patch("/approve/:userId", checkAuth(Role.ADMIN, Role.SUPERADMIN),userController.approveHost)
 
 router.patch("/:id", checkAuth(...Object.values(Role)),
 multerUpload.single("file"),

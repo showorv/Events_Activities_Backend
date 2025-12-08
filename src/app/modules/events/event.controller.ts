@@ -87,6 +87,17 @@ const updateEvent = catchAsyncError (async( req: Request, res: Response)=>{
       data: result,
     });
   });
+ const getAllJoinedEventForUser = catchAsyncError(async (req, res) => {
+  const decodedToken = req.user as JwtPayload
+    const result = await eventService.getAllJoinedEventForUser(decodedToken.userId);
+  
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "joined Events fetched successfully",
+      data: result,
+    });
+  });
 
 const getSingleEvent = catchAsyncError(async (req, res) => {
     const { id } = req.params;
@@ -152,4 +163,4 @@ const eventRevenue = catchAsyncError(async (req: Request, res: Response) => {
 });
 
 
-export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent, deleteEvent, viewParticipants, eventRevenue}
+export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent, deleteEvent, viewParticipants, eventRevenue}

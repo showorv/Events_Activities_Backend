@@ -129,6 +129,30 @@ const getOwnEventForHost = async (hostId: string, query: any) => {
     return { total, result };
   };
   
+  const getAllJoinedEventForUser = async (userId: string) => {
+
+   
+    const participations = await Participation.find({ user: userId }).select("event");
+  
+    if (participations.length === 0) {
+      throw new AppError(404, "You have no participation in any events");
+    }
+  
+    const eventIds = participations.map((p) => p.event);
+  
+    const now = new Date();
+  
+   
+    const pastEvents = await Event.find({
+      _id: { $in: eventIds },
+      date: { $lt: now }, 
+    }).sort({ date: -1 });
+  
+    return pastEvents;
+  };
+  
+  
+
 
 //   const getSingleEvent = async (id: string) => {
 //     const event = await Event.findById(id)
@@ -300,4 +324,4 @@ const getSingleEvent = async (id: string) => {
 
 
 
-export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getSingleEvent,deleteEvent,viewParticipants, getEventRevenue}
+export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent,deleteEvent,viewParticipants, getEventRevenue}

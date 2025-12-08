@@ -16,6 +16,7 @@ router.post("/create",checkAuth(Role.HOST),multerUpload.single("file"), validate
 router.get("/hostEvent", checkAuth(Role.HOST), eventController.getOwnEventForHost)
 router.get("/adminEvent", checkAuth(Role.ADMIN, Role.SUPERADMIN), eventController.getAllEventForAdmin)
 router.get("/userEvent", checkAuth(...Object.values(Role)), eventController.getAllEventForUser)
+router.get("/userJoinedEvent", checkAuth(Role.USER), eventController.getAllJoinedEventForUser)
 
 
 

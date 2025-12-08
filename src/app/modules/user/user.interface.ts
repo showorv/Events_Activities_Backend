@@ -29,6 +29,8 @@ export interface IUser {
 
   isVerified: boolean
   isBlocked: boolean
+  isHostRequest?: boolean
+  isHostApproved?: boolean
 
   createdAt?: Date;
   updatedAt?: Date;

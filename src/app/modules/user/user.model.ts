@@ -33,6 +33,15 @@ const userSchema = new Schema<IUser>({
 
     hostedEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
     joinedEvents: [{ type: mongoose.Schema.Types.ObjectId, ref: "Event" }],
+
+    isHostRequest: {
+        type: Boolean,
+        default: false
+    },
+    isHostApproved: {
+        type: Boolean,
+        default: false
+    },
 },{
     timestamps: true
 })

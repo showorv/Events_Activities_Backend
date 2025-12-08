@@ -112,6 +112,50 @@ const getMe = catchAsyncError(async(req: Request,res: Response)=>{
     })
 })
 
+const becomeHost = catchAsyncError(async(req: Request,res: Response)=>{
+
+    const decodedToken = req.user as JwtPayload
+
+    const user = await userService.becomeHost(decodedToken.userId);
+    
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "become host request sent successfully",
+        data: user,
+       
+    })
+})
+const approveHost = catchAsyncError(async(req: Request,res: Response)=>{
+
+    const userId = req.params.userId
+    const user = await userService.becomeHost(userId as string);
+    
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "approve host successfully",
+        data: user,
+       
+    })
+})
+const getAllHostRequest = catchAsyncError(async(req: Request,res: Response)=>{
+
+
+    const user = await userService.getAllHostRequest();
+    
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "requested host get successfully",
+        data: user,
+       
+    })
+})
+
 
 export const userController = 
 {
@@ -121,5 +165,8 @@ export const userController =
     updateUser,
     getMe,
     blockUser,
-    unblockUser
+    unblockUser,
+    becomeHost,
+    approveHost,
+    getAllHostRequest
 }

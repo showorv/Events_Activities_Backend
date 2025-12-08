@@ -155,7 +155,42 @@ const getMe = async (userId: string) => {
   };
 
 
+  const becomeHost = async (userId: string)=>{
+
+  const user = await User.findById(userId)
+
+  if(user?.role !== Role.USER){
+    throw new AppError(401, "you cannot become host")
+  }
+
+    const updateUser = await User.findByIdAndUpdate(userId, { isHostRequest: true}, {new: true})
+
+    return updateUser
+  }
   
+  const approveHost = async (userId: string)=>{
+
+  const user = await User.findById(userId)
+
+  if(!user){
+    throw new AppError(401, "user not found")
+  }
+
+    const updateUser = await User.findByIdAndUpdate(userId, { isHostRequest: false, role: Role.HOST, isHostApproved: true}, {new: true})
+
+    return updateUser
+  }
+
+  const getAllHostRequest = async ()=>{
+
+    const hostRequest = await User.find({isHostRequest: true, isHostApproved: false, role: Role.USER})
+
+    return hostRequest
+  }
+  
+  
+
+
 
 export const userService = 
 {
@@ -165,5 +200,8 @@ export const userService =
     updateUser,
     getMe,
     blockUser,
-    unBlockUser
+    unBlockUser,
+    becomeHost,
+    approveHost,
+    getAllHostRequest
 }
