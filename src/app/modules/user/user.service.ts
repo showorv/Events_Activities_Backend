@@ -5,7 +5,7 @@ import { IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import bcryptjs from "bcryptjs"
 import httpStatus from "http-status-codes"
-import { cloudinaryDeleteUpload } from "../../config/cloudinary.config";
+import { cloudinaryDeleteUpload, cloudinaryUpload } from "../../config/cloudinary.config";
 
 const createUser =async (payload: Partial<IUser>)=>{
 
@@ -139,6 +139,7 @@ const updateUser = async(userId: string, payload: Partial<IUser>, decodeToken: J
     if(payload.profileImage && findUser.profileImage){
         await cloudinaryDeleteUpload(findUser.profileImage);
     }
+   
 
     return newUpdateUser;
     

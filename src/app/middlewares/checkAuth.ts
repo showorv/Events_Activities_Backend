@@ -12,7 +12,7 @@ import { User } from "../modules/user/user.model";
 export const checkAuth = (...authRoles: string[])=>async(req:Request, res: Response, next: NextFunction)=>{
 
     try {
-        const accessToken = req.cookies["access-token"]
+        const accessToken = req.cookies["accessToken"]
 
        
         

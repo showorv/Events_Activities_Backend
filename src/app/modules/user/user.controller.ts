@@ -82,7 +82,7 @@ const updateUser = catchAsyncError(async(req: Request,res: Response)=>{
 
     const payload: IUser = {
         ...req.body,
-        profile: req.file?.path
+        profileImage: req.file?.path
     }
 
     const updateUser = await userService.updateUser(userId as string, payload, tokenVerified as JwtPayload)

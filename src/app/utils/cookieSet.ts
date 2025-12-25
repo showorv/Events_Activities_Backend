@@ -10,7 +10,7 @@ interface AuthToken {
 export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
 
     if(tokenInfo.accessToken){
-        res.cookie("access-token", tokenInfo.accessToken, {
+        res.cookie("accessToken", tokenInfo.accessToken, {
             httpOnly: true,
             // secure: envVars.NODE_ENV==="development"?false: true,
             // secure: envVars.NODE_ENV !== "development",
