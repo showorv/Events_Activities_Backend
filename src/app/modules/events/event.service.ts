@@ -59,7 +59,8 @@ const updateEvent = async(id:string,hostId: string, payload: Partial<IEvent>)=> 
 const getOwnEventForHost = async (hostId: string, query: any) => {
 
     const searchTerm = query?.searchTerm;
-  
+    const { page = 1, limit = 10 } = query;
+
   
     const filters: any = { host: hostId };
   
@@ -73,12 +74,22 @@ const getOwnEventForHost = async (hostId: string, query: any) => {
       Event,
       { searchTerm, filters },
       query
-    );
+    ).populate("host", "name email profileImage role")
+
+   
+    .populate({
+      path: "participants",
+      populate: {
+        path: "user",
+        select: "name email",
+      },
+    });;
   
     const result = await eventsQuery.exec();
     const total = await Event.countDocuments({ host: hostId });
   
-    return { total, result };
+    return { total, result, page,
+      limit, };
   };
   
   const getAllEventForAdmin = async (query: any) => {
@@ -274,54 +285,50 @@ const getSingleEvent = async (id: string) => {
     };
   };
 
-  const getEventRevenue = async (hostId: string, eventId: string) => {
- 
-    const event = await Event.findOne({ _id: eventId, host: hostId });
+
+  const getAllEventsRevenue = async (hostId: string) => {
+    // 1. Fetch all events hosted by the host
+    const events = await Event.find({ host: hostId });
   
-    if (!event) {
-      throw new AppError(403, "You are not the host of this event");
+    if (!events.length) {
+      return [];
     }
   
- 
+    // 2. Prepare aggregation for payments per event
     const payments = await Payment.aggregate([
       {
         $match: {
-          event: new Types.ObjectId(eventId),
+          event: { $in: events.map((e) => e._id) },
           status: "PAID",
         },
       },
       {
         $group: {
           _id: "$event",
-          totalRevenue: { $sum: "$amount" },        
-          totalTransactions: { $sum: 1 },            
-          users: { $addToSet: "$user" },             
+          totalRevenue: { $sum: "$amount" },
+          totalTransactions: { $sum: 1 },
+          users: { $addToSet: "$user" },
         },
       },
     ]);
   
-    if (payments.length === 0) {
+    // 3. Map results per event
+    const revenueData = events.map((event) => {
+      const payment = payments.find((p) => p._id.toString() === event._id.toString());
+  
       return {
-        eventId,
+        eventId: event._id,
         eventName: event.name,
-        totalRevenue: 0,
-        totalTransactions: 0,
-        totalParticipantsPaid: 0,
+        totalRevenue: payment?.totalRevenue || 0,
+        totalTransactions: payment?.totalTransactions || 0,
+        totalParticipantsPaid: payment?.users.length || 0,
       };
-    }
+    });
   
-    const result = payments[0];
-  
-    return {
-      eventId,
-      eventName: event.name,
-      totalRevenue: result.totalRevenue,
-      totalTransactions: result.totalTransactions,
-      totalParticipantsPaid: result.users.length,
-    };
+    return revenueData;
   };
   
 
 
 
-export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent,deleteEvent,viewParticipants, getEventRevenue}
+export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent,deleteEvent,viewParticipants, getAllEventsRevenue}

@@ -149,9 +149,9 @@ const getSingleEvent = catchAsyncError(async (req, res) => {
 
 const eventRevenue = catchAsyncError(async (req: Request, res: Response) => {
   const hostId = req.user.userId; 
-  const eventId = req.params.eventId as string;
+  // const eventId = req.params.eventId as string;
 
-  const result = await eventService.getEventRevenue(hostId, eventId);
+  const result = await eventService.getAllEventsRevenue(hostId);
 
   sendResponse(res,{
     statusCode: 201,
