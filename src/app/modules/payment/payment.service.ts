@@ -13,33 +13,73 @@ import { User } from "../user/user.model";
 
 
 
+// const initPayment = async (eventId: string, userId: string) => {
+
+//   const event = await Event.findById(eventId);
+
+//   if (!event) {
+//     throw new AppError(httpsStatus.NOT_FOUND, "Event not found");
+//   }
+
+//   const user = await User.findById(userId)
+
+//   if(!user){
+//     throw new AppError(httpsStatus.NOT_FOUND, "user not found");
+//   }
+//   if (event.joiningFee === 0) {
+//     throw new AppError(400, "This event is free. No payment required.");
+//   }
+
+//   // Check existing payment
+//   let payment = await Payment.findOne({ event: eventId, user: userId });
+
+//   if (!payment) {
+//     payment = await Payment.create({
+//       event: eventId,
+//       user: userId,
+//       amount: event.joiningFee as number,
+//       transactionId: `TRX-${Date.now()}`,
+//       status: PaymentStatus.UNPAID,
+//     });
+//   }
+
+//   const sslPayload = {
+//     name: user.name,
+//     email: user.email,
+//     address: user.location as string,
+//     transactionId: payment.transactionId,
+//     amount: event.joiningFee as number,
+//   };
+
+//   const sslcommerz = await sslcomerzService.sslcomerzInitialize(sslPayload);
+
+//   return {
+//     paymentUrl: sslcommerz.GatewayPageURL,
+//   };
+// };
+
 const initPayment = async (eventId: string, userId: string) => {
+  const event = await Event.findById(eventId).populate("host"); // populate host
+  if (!event) throw new AppError(404, "Event not found");
 
-  const event = await Event.findById(eventId);
+  const user = await User.findById(userId);
+  if (!user) throw new AppError(404, "User not found");
 
-  if (!event) {
-    throw new AppError(httpsStatus.NOT_FOUND, "Event not found");
-  }
-
-  const user = await User.findById(userId)
-
-  if(!user){
-    throw new AppError(httpsStatus.NOT_FOUND, "user not found");
-  }
   if (event.joiningFee === 0) {
     throw new AppError(400, "This event is free. No payment required.");
   }
 
-  // Check existing payment
-  let payment = await Payment.findOne({ event: eventId, user: userId });
 
+  let payment = await Payment.findOne({ event: eventId, user: userId });
   if (!payment) {
     payment = await Payment.create({
       event: eventId,
       user: userId,
+      host: event.host._id, 
       amount: event.joiningFee as number,
       transactionId: `TRX-${Date.now()}`,
       status: PaymentStatus.UNPAID,
+      
     });
   }
 
@@ -55,9 +95,10 @@ const initPayment = async (eventId: string, userId: string) => {
 
   return {
     paymentUrl: sslcommerz.GatewayPageURL,
+    eventId: event._id,     
+    hostId: event.host._id, 
   };
 };
-
 
 
 const paymentSuccess = async (query: Record<string, string>) => {
@@ -91,7 +132,14 @@ const paymentSuccess = async (query: Record<string, string>) => {
 
 
     await session.commitTransaction();
-    return { message: "Payment successful" };
+    const eventId = payment.event.toString();
+    const hostId = payment.host.toString(); 
+
+return {
+  message: "Payment successful",
+  eventId,
+  hostId,
+};
   } catch (err) {
     await session.abortTransaction();
     throw err;

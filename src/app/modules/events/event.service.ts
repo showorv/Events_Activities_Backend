@@ -6,6 +6,8 @@ import { cloudinaryDeleteUpload } from "../../config/cloudinary.config"
 import { buildQuery } from "../../utils/queryBuilder"
 import { Participation } from "../participants/participants.model"
 import { Payment } from "../payment/payment.model"
+import { participantsStatus } from "../participants/participants.interface"
+import { PaymentStatus } from "../payment/payment.interface"
 
 const createEvent = async(hostId:string, payload: Partial<IEvent>)=> {
 
@@ -94,7 +96,7 @@ const getOwnEventForHost = async (hostId: string, query: any) => {
   
   const getAllEventForAdmin = async (query: any) => {
     const searchTerm = query?.searchTerm;
-  
+    const { page = 1, limit = 10 } = query;
   
     const filters: any = {};
   
@@ -108,12 +110,21 @@ const getOwnEventForHost = async (hostId: string, query: any) => {
       Event,
       { searchTerm, filters },
       query
-    );
+    ).populate("host", "name email profileImage role ratingAvg")
+
+   
+    .populate({
+      path: "participants",
+      populate: {
+        path: "user",
+        select: "name email",
+      },
+    });;;;
   
     const result = await eventsQuery.exec();
     const total = await Event.countDocuments(filters);
   
-    return { total, result };
+    return { total, result , page,limit};
   };
   
 
@@ -132,7 +143,16 @@ const getOwnEventForHost = async (hostId: string, query: any) => {
       Event,
       { searchTerm, filters },
       query
-    );
+    ).populate("host", "name email profileImage role")
+
+   
+    .populate({
+      path: "participants",
+      populate: {
+        path: "user",
+        select: "name email",
+      },
+    });;;
   
     const result = await eventsQuery.exec();
     const total = await Event.countDocuments(filters);
@@ -164,6 +184,28 @@ const getOwnEventForHost = async (hostId: string, query: any) => {
   
   
 
+  export const getAllPendingPaymentsForUser = async (userId: string) => {
+  
+    const participations = await Participation.find({
+      user: userId,
+      status: participantsStatus.JOINED,
+      paymentStatus: { $ne: PaymentStatus.PAID }, 
+    }).populate("event"); 
+  
+    if (!participations || participations.length === 0) {
+      throw new AppError(404, "No pending payment events found");
+    }
+  
+    
+    const events = participations.map((p) => ({
+      participationId: p._id,
+      paymentStatus: p.paymentStatus,
+      event: p.event,
+    }));
+  
+    return events;
+  };
+  
 
 //   const getSingleEvent = async (id: string) => {
 //     const event = await Event.findById(id)
@@ -331,4 +373,4 @@ const getSingleEvent = async (id: string) => {
 
 
 
-export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent,deleteEvent,viewParticipants, getAllEventsRevenue}
+export const eventService = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent,deleteEvent,viewParticipants, getAllEventsRevenue,getAllPendingPaymentsForUser}

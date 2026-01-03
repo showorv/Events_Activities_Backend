@@ -161,6 +161,22 @@ const eventRevenue = catchAsyncError(async (req: Request, res: Response) => {
    
 })
 });
+const getAllPendingPaymentsForUser = catchAsyncError(async (req: Request, res: Response) => {
+  const userId = req.user.userId;
+  // const eventId = req.params.eventId as string;
+
+  const result = await eventService.getAllPendingPaymentsForUser(userId);
+
+  sendResponse(res,{
+    statusCode: 201,
+    success: true,
+    message:  "Pending payment events fetched successfully",
+    data: result,
+   
+})
+});
 
 
-export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent, deleteEvent, viewParticipants, eventRevenue}
+
+
+export const eventController = {createEvent, updateEvent, getOwnEventForHost, getAllEventForAdmin,getAllEventForUser,getAllJoinedEventForUser,getSingleEvent, deleteEvent, viewParticipants, eventRevenue,getAllPendingPaymentsForUser}
