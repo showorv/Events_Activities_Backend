@@ -5,6 +5,7 @@ import { eventRouter } from "../modules/events/event.router";
 import { participationRouter } from "../modules/participants/participants.router";
 import { paymentRouter } from "../modules/payment/payment.router";
 import { rateRouter } from "../modules/rating/rating.router";
+import { contactRouter } from "../modules/contact/contact.route";
 
 
 
@@ -34,6 +35,10 @@ const moduleRoutes = [
     {
         path: "/rating",
         route: rateRouter
+    },
+    {
+        path: "/contact",
+        route: contactRouter
     },
     
 ]
