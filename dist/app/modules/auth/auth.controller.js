@@ -22,13 +22,13 @@ const createLogin = (0, catchAsyncError_1.catchAsyncError)(async (req, res, next
 const logout = (0, catchAsyncError_1.catchAsyncError)(async (req, res) => {
     res.clearCookie("access-token", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none"
     });
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none"
     });
     res.status(http_status_codes_1.default.OK).json({
         success: true,
