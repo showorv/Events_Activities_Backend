@@ -1,5 +1,5 @@
 
-import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
+import {  v2 as cloudinary } from "cloudinary";
 
 import AppError from "../errorHelpers/AppError";
 import { envVars } from "./env";
