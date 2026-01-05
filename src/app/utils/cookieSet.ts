@@ -15,7 +15,9 @@ export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
             // secure: envVars.NODE_ENV==="development"?false: true,
             // secure: envVars.NODE_ENV !== "development",
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+
         })
     }
 
@@ -25,7 +27,8 @@ export const setCookies = (res: Response, tokenInfo: AuthToken)=>{
             // secure: false // eta na dile frontend e cookie access korte dibe na cors er karone
             // secure: envVars.NODE_ENV !== "development",
             secure: true,
-            sameSite: "none"
+            sameSite: "none",
+            maxAge: 30 * 24 * 60 * 60 * 1000
         })
     }
 }

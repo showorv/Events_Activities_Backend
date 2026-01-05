@@ -38,13 +38,13 @@ const logout = catchAsyncError(async(req: Request, res: Response)=>{
 
     res.clearCookie("access-token", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none"
     })
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none"
     })
 
 
