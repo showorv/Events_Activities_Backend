@@ -1,0 +1,13 @@
+import mongoose, { Document } from "mongoose";
+export interface IContact extends Document {
+    name: string;
+    email: string;
+    message: string;
+    createdAt: Date;
+}
+export declare const Contact: mongoose.Model<IContact, {}, {}, {}, mongoose.Document<unknown, {}, IContact, {}, mongoose.DefaultSchemaOptions> & IContact & Required<{
+    _id: mongoose.Types.ObjectId;
+}> & {
+    __v: number;
+}, any, IContact>;
+//# sourceMappingURL=contact.model.d.ts.map

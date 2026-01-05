@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userRouter = void 0;
+const express_1 = require("express");
+const user_controller_1 = require("./user.controller");
+const validationSchema_1 = require("../../middlewares/validationSchema");
+const user_validation_1 = require("./user.validation");
+const multer_config_1 = require("../../config/multer.config");
+const checkAuth_1 = require("../../middlewares/checkAuth");
+const user_interface_1 = require("./user.interface");
+const router = (0, express_1.Router)();
+router.post("/create", multer_config_1.multerUpload.single("file"), (0, validationSchema_1.validateSchma)(user_validation_1.createUserValidation), user_controller_1.userController.createUser);
+router.get("/", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SUPERADMIN), user_controller_1.userController.getAllUser);
+router.get("/me", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), user_controller_1.userController.getMe);
+router.get("/request-host", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SUPERADMIN), user_controller_1.userController.getAllHostRequest);
+router.patch("/become-host", (0, checkAuth_1.checkAuth)(user_interface_1.Role.USER), user_controller_1.userController.becomeHost);
+router.get("/:userId", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), user_controller_1.userController.getSingleUser);
+router.patch("/approve/:userId", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SUPERADMIN), user_controller_1.userController.approveHost);
+router.patch("/:id", (0, checkAuth_1.checkAuth)(...Object.values(user_interface_1.Role)), multer_config_1.multerUpload.single("file"), (0, validationSchema_1.validateSchma)(user_validation_1.updateUserValidation), user_controller_1.userController.updateUser);
+router.patch("/block/:userId", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SUPERADMIN), user_controller_1.userController.blockUser);
+router.patch("/unblock/:userId", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SUPERADMIN), user_controller_1.userController.unblockUser);
+exports.userRouter = router;
+//# sourceMappingURL=user.router.js.map
