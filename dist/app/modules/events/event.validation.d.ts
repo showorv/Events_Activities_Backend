@@ -25,12 +25,12 @@ export declare const createEventSchema: z.ZodObject<{
 export declare const updateEventSchema: z.ZodObject<{
     name: z.ZodOptional<z.ZodString>;
     type: z.ZodOptional<z.ZodString>;
-    date: z.ZodOptional<z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodDate>>;
+    date: z.ZodPipe<z.ZodTransform<unknown, unknown>, z.ZodOptional<z.ZodDate>>;
     time: z.ZodOptional<z.ZodString>;
     location: z.ZodOptional<z.ZodString>;
-    minParticipants: z.ZodOptional<z.ZodNumber>;
-    maxParticipants: z.ZodOptional<z.ZodNumber>;
-    joiningFee: z.ZodOptional<z.ZodNumber>;
+    minParticipants: z.ZodPipe<z.ZodTransform<number | undefined, unknown>, z.ZodOptional<z.ZodNumber>>;
+    maxParticipants: z.ZodPipe<z.ZodTransform<number | undefined, unknown>, z.ZodOptional<z.ZodNumber>>;
+    joiningFee: z.ZodPipe<z.ZodTransform<number | undefined, unknown>, z.ZodOptional<z.ZodNumber>>;
     description: z.ZodOptional<z.ZodString>;
     status: z.ZodOptional<z.ZodEnum<{
         OPEN: "OPEN";

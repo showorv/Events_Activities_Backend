@@ -3,13 +3,14 @@ import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import { multerUpload } from "../../config/multer.config";
 import { eventController } from "./event.controller";
-import { validateSchma } from "../../middlewares/validationSchema";
+
 import { createEventSchema, updateEventSchema } from "./event.validation";
+import { validateSchema } from "../../middlewares/validationSchema";
 
 
 const router = Router()
 
-router.post("/create",checkAuth(Role.HOST),multerUpload.single("file"), validateSchma(createEventSchema), eventController.createEvent)
+router.post("/create",checkAuth(Role.HOST),multerUpload.single("file"), validateSchema(createEventSchema), eventController.createEvent)
 
 
 
@@ -26,7 +27,7 @@ router.get("/:id", eventController.getSingleEvent)
 router.get("/view/:id", checkAuth(Role.HOST, Role.SUPERADMIN, Role.ADMIN), eventController.viewParticipants)
 
 
-router.patch("/:id",checkAuth(Role.HOST),multerUpload.single("file"), validateSchma(updateEventSchema), eventController.updateEvent)
+router.patch("/:id",checkAuth(Role.HOST),multerUpload.single("file"), validateSchema(updateEventSchema), eventController.updateEvent)
 
 router.delete("/:id",checkAuth(Role.HOST), eventController.deleteEvent)
 

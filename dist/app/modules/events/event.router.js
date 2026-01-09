@@ -6,10 +6,10 @@ const checkAuth_1 = require("../../middlewares/checkAuth");
 const user_interface_1 = require("../user/user.interface");
 const multer_config_1 = require("../../config/multer.config");
 const event_controller_1 = require("./event.controller");
-const validationSchema_1 = require("../../middlewares/validationSchema");
 const event_validation_1 = require("./event.validation");
+const validationSchema_1 = require("../../middlewares/validationSchema");
 const router = (0, express_1.Router)();
-router.post("/create", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), multer_config_1.multerUpload.single("file"), (0, validationSchema_1.validateSchma)(event_validation_1.createEventSchema), event_controller_1.eventController.createEvent);
+router.post("/create", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), multer_config_1.multerUpload.single("file"), (0, validationSchema_1.validateSchema)(event_validation_1.createEventSchema), event_controller_1.eventController.createEvent);
 router.get("/hostEvent", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), event_controller_1.eventController.getOwnEventForHost);
 router.get("/adminEvent", (0, checkAuth_1.checkAuth)(user_interface_1.Role.ADMIN, user_interface_1.Role.SUPERADMIN), event_controller_1.eventController.getAllEventForAdmin);
 router.get("/userEvent", event_controller_1.eventController.getAllEventForUser);
@@ -18,7 +18,7 @@ router.get("/pendingPaymentEvent", (0, checkAuth_1.checkAuth)(user_interface_1.R
 router.get("/revenue", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), event_controller_1.eventController.eventRevenue);
 router.get("/:id", event_controller_1.eventController.getSingleEvent);
 router.get("/view/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST, user_interface_1.Role.SUPERADMIN, user_interface_1.Role.ADMIN), event_controller_1.eventController.viewParticipants);
-router.patch("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), multer_config_1.multerUpload.single("file"), (0, validationSchema_1.validateSchma)(event_validation_1.updateEventSchema), event_controller_1.eventController.updateEvent);
+router.patch("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), multer_config_1.multerUpload.single("file"), (0, validationSchema_1.validateSchema)(event_validation_1.updateEventSchema), event_controller_1.eventController.updateEvent);
 router.delete("/:id", (0, checkAuth_1.checkAuth)(user_interface_1.Role.HOST), event_controller_1.eventController.deleteEvent);
 exports.eventRouter = router;
 //# sourceMappingURL=event.router.js.map

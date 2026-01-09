@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { userController } from "./user.controller";
-import { validateSchma } from "../../middlewares/validationSchema";
+import { validateSchema } from "../../middlewares/validationSchema";
 import { createUserValidation, updateUserValidation } from "./user.validation";
 import { multerUpload } from "../../config/multer.config";
 import { checkAuth } from "../../middlewares/checkAuth";
@@ -8,7 +8,7 @@ import { Role } from "./user.interface";
 
 const router = Router()
 
-router.post("/create",multerUpload.single("file"), validateSchma(createUserValidation), userController.createUser)
+router.post("/create",multerUpload.single("file"), validateSchema(createUserValidation), userController.createUser)
 
 router.get ("/",
 checkAuth(Role.ADMIN, Role.SUPERADMIN), 
@@ -24,7 +24,7 @@ router.patch("/approve/:userId", checkAuth(Role.ADMIN, Role.SUPERADMIN),userCont
 
 router.patch("/:id", checkAuth(...Object.values(Role)),
 multerUpload.single("file"),
-validateSchma(updateUserValidation),
+validateSchema(updateUserValidation),
 userController.updateUser)
 
 router.patch("/block/:userId", checkAuth(Role.ADMIN,Role.SUPERADMIN), userController.blockUser);

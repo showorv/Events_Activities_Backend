@@ -5,7 +5,7 @@ import cors from "cors"
 // import { globalError } from "./app/middlewares/globalErrorHandle"
 // import { routeNotFound } from "./app/middlewares/routeNotFound"
 import cookieParser from "cookie-parser"
-import { envVars } from "./app/config/env"
+
 import { router } from "./app/route"
 import { globalError } from "./app/middlewares/globalErrorHandler"
 import { routeNotFound } from "./app/middlewares/routeNotFound"
@@ -18,10 +18,10 @@ const app:Application = express()
 app.use(cookieParser())
 app.use(express.json())
 
-app.use(express.urlencoded({extended: true})) // for read form-data
+app.use(express.urlencoded({extended: true})) 
 
 app.use(cors({
-    origin: envVars.FRONTEND_URL,
+    origin:  ["https://events-activities-frontend-ochre.vercel.app",  "http://localhost:3000"],
     credentials: true
 }))
 

@@ -1,7 +1,7 @@
 import { ZodObject } from "zod";
 import { RequestHandler } from "express";
 
-export const validateSchma = (zodSchema: ZodObject): RequestHandler => {
+export const validateSchema = (zodSchema: ZodObject): RequestHandler => {
   return async (req, res, next) => {
     try {
       let parsedBody = req.body;
@@ -32,3 +32,4 @@ export const validateSchma = (zodSchema: ZodObject): RequestHandler => {
     }
   };
 };
+

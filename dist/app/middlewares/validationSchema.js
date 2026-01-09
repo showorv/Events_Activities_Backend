@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateSchma = void 0;
-const validateSchma = (zodSchema) => {
+exports.validateSchema = void 0;
+const validateSchema = (zodSchema) => {
     return async (req, res, next) => {
         try {
             let parsedBody = req.body;
@@ -30,5 +30,5 @@ const validateSchma = (zodSchema) => {
         }
     };
 };
-exports.validateSchma = validateSchma;
+exports.validateSchema = validateSchema;
 //# sourceMappingURL=validationSchema.js.map
